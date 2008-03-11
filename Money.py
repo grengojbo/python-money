@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import exceptions
 from decimal import Decimal
 
 class Currency:
@@ -27,6 +28,12 @@ DEFAULT_CURRENCY = CURRENCY['XXX']
 def set_default_currency(code="XXX"):
 	global DEFAULT_CURRENCY
 	DEFAULT_CURRENCY = CURRENCY[code]
+
+class IncorrectMoneyInputError(exceptions.Exception):
+	def __init__(self):
+		return
+	def __str__(self):
+		return "Incorrectly formatted monetary input!"
 
 class Money:
 	amount = Decimal("0.0")
@@ -96,26 +103,6 @@ class Money:
 		Convert from one currency to another.
 		"""
 		return None # TODO  (How??)
-	def allocate(self, ratios):
-		"""
-		Allocate a sum of money to several accounts.
-		"""
-		total = sum(ratios)
-		remainder = self.amount
-		results = []
-		for i in range(0, len(ratios)):
-			results.append(Money(amount = self.amount * ratios[i] / total, currency = self.currency))
-			remainder -= results[i].amount
-		i = 0
-		while i < remainder:
-			results[i].amount += Decimal("0.01")
-			i += 1
-		return results
-	def spell_out(self):
-		"""
-		Spell out a monetary amount.  E.g. "Two-hundred and twenty-six dollars and seventeen cents."
-		"""
-		pass # TODO
 	
 	__radd__ = __add__
 	__rsub__ = __sub__
@@ -154,6 +141,47 @@ class Money:
 		return self < other or self == other
 	def __ge__(self, other):
 		return self > other or self == other
+
+	#
+	# Miscellaneous helper methods
+	#
+
+	def allocate(self, ratios):
+		"""
+		Allocates a sum of money to several accounts.
+		"""
+		total = sum(ratios)
+		remainder = self.amount
+		results = []
+		for i in range(0, len(ratios)):
+			results.append(Money(amount = self.amount * ratios[i] / total, currency = self.currency))
+			remainder -= results[i].amount
+		i = 0
+		while i < remainder:
+			results[i].amount += Decimal("0.01")
+			i += 1
+		return results
+
+	def spell_out(self):
+		"""
+		Spells out a monetary amount.  E.g. "Two-hundred and twenty-six dollars and seventeen cents."
+		"""
+		pass # TODO
+
+	def from_string(self, s):
+		"""
+		Parses a properly formatted string and extracts the monetary value and currency
+		"""
+		try:
+			self.amount = Decimal(str(s).strip())
+			self.currency = DEFAULT_CURRENCY
+		except:
+			try:
+				s = s.strip()
+				self.currency = CURRENCY[s[:3].upper()]
+				self.amount = Decimal(s[3:].strip())
+			except:
+				raise IncorrectMoneyInputError
 
 #
 # Definitions of ISO 4217 Currencies
