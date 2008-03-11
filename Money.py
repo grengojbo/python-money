@@ -27,7 +27,6 @@ DEFAULT_CURRENCY = CURRENCY['XXX']
 def set_default_currency(code="XXX"):
 	global DEFAULT_CURRENCY
 	DEFAULT_CURRENCY = CURRENCY[code]
-	print "Default currency is now %s" % (DEFAULT_CURRENCY)
 
 class Money:
 	amount = Decimal("0.0")
@@ -123,8 +122,38 @@ class Money:
 	__rmul__ = __mul__
 	__rdiv__ = __div__
 
-	#TODO: Override comparison operators
-
+	#
+	# Override comparison operators
+	#
+	def __eq__(self, other):
+		if isinstance(other, Money):
+			return (self.amount == other.amount) and (self.currency == other.currency)
+		return (self.amount == Decimal(str(other)))
+	def __ne__(self, other):
+		result = self.__eq__(other)
+		if result is NotImplemented:
+			return result
+		return not result
+	def __lt__(self, other):
+		if isinstance(other, Money):
+			if (self.currency == other.currency):
+				return (self.amount < other.amount)
+			else:
+				raise TypeError, 'can not compare different currencies'
+		else:
+			return (self.amount < Decimal(str(other)))
+	def __gt__(self, other):
+		if isinstance(other, Money):
+			if (self.currency == other.currency):
+				return (self.amount > other.amount)
+			else:
+				raise TypeError, 'can not compare different currencies'
+		else:
+			return (self.amount > Decimal(str(other)))
+	def __le__(self, other):
+		return self < other or self == other
+	def __ge__(self, other):
+		return self > other or self == other
 
 #
 # Definitions of ISO 4217 Currencies
