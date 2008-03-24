@@ -47,6 +47,18 @@ class MoneyFieldTestCase(TestCase):
         #test retriving without currency
         entry = Entity.objects.get(price=100)
         self.assertEqual(entry.price, price)
+    
+    def testAssign(self):
+        ent = Entity(name='test', price=Money(100, "USD"))
+        ent.save()
+        self.assertEquals(ent.price, Money(100, "USD"))
+        
+        ent.price = Money(10, "USD")
+        ent.save()
+        self.assertEquals(ent.price, Money(10, "USD"))
+        
+        ent_same = Entity.objects.get(pk=ent.id)
+        self.assertEquals(ent_same.price, Money(10, "USD"))
         
     def testLookup(self):
         USD100 = Money(100, "USD")

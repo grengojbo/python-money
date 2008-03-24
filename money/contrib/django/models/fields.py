@@ -27,7 +27,7 @@ class MoneyFieldProxy(object):
     def __set__(self, obj, value):
         if isinstance(value, Money):
             obj.__dict__[self.field.name] = value.amount  
-            #setattr(obj, self.currency_field_name, value.currency)
+            setattr(obj, self.currency_field_name, value.currency)
         else:
             obj.__dict__[self.field.name] = self.field.to_python(value) 
 
