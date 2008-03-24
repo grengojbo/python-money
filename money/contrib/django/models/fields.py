@@ -34,14 +34,20 @@ class MoneyFieldProxy(object):
 
 class MoneyField(models.DecimalField):
     
-    #TODO: is tehre any options for __init__ ? (f.e. indexing, defaults, etc.)
+    def __init__(self, verbose_name=None, name=None, 
+                 max_digits=None, decimal_places=None,
+                 default=None, default_currency=None, **kwargs):
+        if isinstance(default, Money):
+            self.default_currency = default.currency
+        self.default_currency = default_currency
+        super(MoneyField, self).__init__(verbose_name, name, max_digits, decimal_places, default=default, **kwargs)
     
     def get_internal_type(self): 
          return "DecimalField"
      
     def contribute_to_class(self, cls, name):
         c_field_name = currency_field_name(name)
-        c_field = models.CharField(max_length=3)
+        c_field = models.CharField(max_length=3, default=self.default_currency)
         c_field.creation_counter = self.creation_counter
         cls.add_to_class(c_field_name, c_field)
         
@@ -59,3 +65,9 @@ class MoneyField(models.DecimalField):
             raise NotSupportedLookup(lookup_type)
         value = self.get_db_prep_save(value)
         return super(MoneyField, self).get_db_prep_lookup(lookup_type, value)
+    
+    def get_default(self):
+        if isinstance(self.default, Money):
+            return self.default
+        else:
+            return super(MoneyField, self).get_default()

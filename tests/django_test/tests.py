@@ -1,5 +1,5 @@
 from unittest import TestCase
-from django_test.models import Entity
+from django_test.models import Entity, Entity_0_USD, Entity_USD
 from money.contrib.django.models.fields import NotSupportedLookup
 from money import Money, CURRENCY
 
@@ -10,6 +10,9 @@ class MoneyFieldTestCase(TestCase):
     def setUp(self):
         #cleanup all entities
         Entity.objects.all().delete()
+        Entity_0_USD.objects.all().delete()
+        Entity_USD.objects.all().delete()
+        
     
     def assertSameCurrency(self, moneys, currency=None):
         currencies = set([m.currency for m in moneys])
@@ -59,6 +62,15 @@ class MoneyFieldTestCase(TestCase):
         
         ent_same = Entity.objects.get(pk=ent.id)
         self.assertEquals(ent_same.price, Money(10, "USD"))
+        
+    def testDefaults(self):
+        ent = Entity_0_USD.objects.create(name='0 USD')
+        ent = Entity_0_USD.objects.get(pk=ent.id)
+        self.assertEquals(ent.price, Money(0, 'USD'))
+        
+        ent = Entity_USD.objects.create(name='100 USD', price=100)
+        ent = Entity_USD.objects.get(pk=ent.id)
+        self.assertEquals(ent.price, Money(100, 'USD'))
         
     def testLookup(self):
         USD100 = Money(100, "USD")
