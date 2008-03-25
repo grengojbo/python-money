@@ -1,9 +1,5 @@
 from django.conf.urls.defaults import *
 
-urlpatterns = patterns('',
-    # Example:
-    # (r'^django_test/', include('django_test.foo.urls')),
-
-    # Uncomment this for admin:
-#     (r'^admin/', include('django.contrib.admin.urls')),
+urlpatterns = patterns('django_test.views',
+    ('^form1/$', 'form1'),
 )
