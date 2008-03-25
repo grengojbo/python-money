@@ -2,6 +2,8 @@ from django import newforms as forms
 from money import Money, CURRENCY
 from decimal import Decimal
 
+__all__ = ('InputMoneyWidget',)
+
 CURRENCY_CHOICES = ((c.code, c.name) for i, c in CURRENCY.items() if c.code != 'XXX')
 
 class InputMoneyWidget(forms.TextInput):

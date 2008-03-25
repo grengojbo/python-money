@@ -1,4 +1,5 @@
 from django.db import models
+from money.contrib.django import forms
 from money import Money 
 
 __all__ = ('MoneyField', 'currency_field_name', 'NotSupportedLookup')
@@ -47,7 +48,7 @@ class MoneyField(models.DecimalField):
      
     def contribute_to_class(self, cls, name):
         c_field_name = currency_field_name(name)
-        c_field = models.CharField(max_length=3, default=self.default_currency)
+        c_field = models.CharField(max_length=3, default=self.default_currency, editable=False)
         c_field.creation_counter = self.creation_counter
         cls.add_to_class(c_field_name, c_field)
         
@@ -71,3 +72,8 @@ class MoneyField(models.DecimalField):
             return self.default
         else:
             return super(MoneyField, self).get_default()
+    
+    def formfield(self, **kwargs):
+        defaults = {'form_class': forms.MoneyField}
+        defaults.update(kwargs)
+        return super(MoneyField, self).formfield(**defaults)

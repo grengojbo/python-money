@@ -2,6 +2,8 @@ from django import newforms as forms
 from widgets import InputMoneyWidget
 from money import Money
 
+__all__ = ('MoneyField',)
+
 class MoneyField(forms.DecimalField):
     widget = InputMoneyWidget()
     
