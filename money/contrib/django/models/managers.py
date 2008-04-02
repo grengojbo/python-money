@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.encoding import smart_unicode
 from fields import currency_field_name
 
 __all__ = ('MoneyManager',)
@@ -17,7 +18,7 @@ class MoneyManager(models.Manager):
                     field_name = currency_field_name(path[0])
                 else:
                     field_name = currency_field_name(name)
-                to_append[field_name] = value.currency
+                to_append[field_name] = smart_unicode(value.currency)
         kwargs.update(to_append)
         return kwargs
         
