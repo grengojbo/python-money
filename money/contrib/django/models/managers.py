@@ -41,9 +41,9 @@ class MoneyManager(models.Manager):
         kwargs = self._update_params(kwargs)
         return self.get_query_set().get_or_create(**kwargs)
         
-    def create(self, **kwargs):
-        kwargs = self._update_params(kwargs)
-        return self.get_query_set().create(**kwargs)
+    #def create(self, **kwargs):
+    #    kwargs = self._update_params(kwargs)
+    #    return self.get_query_set().create(**kwargs)
 
     def filter(self, *args, **kwargs):
         kwargs = self._update_params(kwargs)
