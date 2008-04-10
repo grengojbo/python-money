@@ -2,13 +2,17 @@ from django import newforms as forms
 from money import Money, CURRENCY
 from decimal import Decimal
 
-__all__ = ('InputMoneyWidget',)
+__all__ = ('InputMoneyWidget', 'CurrencySelect',)
 
 CURRENCY_CHOICES = ((c.code, c.name) for i, c in CURRENCY.items() if c.code != 'XXX')
 
+class CurrencySelect(forms.Select):
+    def __init__(self, attrs=None, choices=CURRENCY_CHOICES):
+        super(CurrencySelect, self).__init__(attrs, choices)
+    
 class InputMoneyWidget(forms.TextInput):
     
-    currency_widget = forms.Select(choices=CURRENCY_CHOICES)
+    currency_widget = CurrencySelect()
     
     def render(self, name, value, attrs=None):
         amount = ''

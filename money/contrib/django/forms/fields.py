@@ -10,5 +10,5 @@ class MoneyField(forms.DecimalField):
     def clean(self, value):
         #TODO: check that value is tupple
         amount = super(MoneyField, self).clean(value[0])
-        currency = value[1]
+        currency = value[1]#TODO: check - is currency valid
         return Money(amount=amount, currency=currency)
