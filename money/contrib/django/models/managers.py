@@ -1,11 +1,12 @@
 from django.db import models
+from django.db.models.query import QuerySet
 from django.utils.encoding import smart_unicode
 from fields import currency_field_name
 
-__all__ = ('MoneyManager',)
+__all__ = ('QuerysetWithMoney', 'MoneyManager',)
 
 
-class MoneyManager(models.Manager):
+class QuerysetWithMoney(QuerySet):
     
     def _update_params(self, kwargs):
         from django.db.models.query import LOOKUP_SEPARATOR
@@ -24,60 +25,65 @@ class MoneyManager(models.Manager):
         
     def dates(self, *args, **kwargs):
         kwargs = self._update_params(kwargs)
-        return self.get_query_set().dates(*args, **kwargs)
+        return super(QuerysetWithMoney, self).dates(*args, **kwargs)
 
     def distinct(self, *args, **kwargs):
         kwargs = self._update_params(kwargs)
-        return self.get_query_set().distinct(*args, **kwargs)
+        return super(QuerysetWithMoney, self).distinct(*args, **kwargs)
 
     def extra(self, *args, **kwargs):
         kwargs = self._update_params(kwargs)
-        return self.get_query_set().extra(*args, **kwargs)
+        return super(QuerysetWithMoney, self).extra(*args, **kwargs)
 
     def get(self, *args, **kwargs):
         kwargs = self._update_params(kwargs)
-        return self.get_query_set().get(*args, **kwargs)
+        return super(QuerysetWithMoney, self).get(*args, **kwargs)
 
     def get_or_create(self, **kwargs):
         kwargs = self._update_params(kwargs)
-        return self.get_query_set().get_or_create(**kwargs)
+        return super(QuerysetWithMoney, self).get_or_create(**kwargs)
         
     #def create(self, **kwargs):
     #    kwargs = self._update_params(kwargs)
-    #    return self.get_query_set().create(**kwargs)
+    #    return super(QuerysetWithMoney, self).create(**kwargs)
 
     def filter(self, *args, **kwargs):
         kwargs = self._update_params(kwargs)
-        return self.get_query_set().filter(*args, **kwargs)
+        return super(QuerysetWithMoney, self).filter(*args, **kwargs)
 
     def complex_filter(self, *args, **kwargs):
         kwargs = self._update_params(kwargs)
-        return self.get_query_set().complex_filter(*args, **kwargs)
+        return super(QuerysetWithMoney, self).complex_filter(*args, **kwargs)
 
     def exclude(self, *args, **kwargs):
         kwargs = self._update_params(kwargs)
-        return self.get_query_set().exclude(*args, **kwargs)
+        return super(QuerysetWithMoney, self).exclude(*args, **kwargs)
 
     def in_bulk(self, *args, **kwargs):
         kwargs = self._update_params(kwargs)
-        return self.get_query_set().in_bulk(*args, **kwargs)
+        return super(QuerysetWithMoney, self).in_bulk(*args, **kwargs)
 
     def iterator(self, *args, **kwargs):
         kwargs = self._update_params(kwargs)
-        return self.get_query_set().iterator(*args, **kwargs)
+        return super(QuerysetWithMoney, self).iterator(*args, **kwargs)
 
     def latest(self, *args, **kwargs):
         kwargs = self._update_params(kwargs)
-        return self.get_query_set().latest(*args, **kwargs)
+        return super(QuerysetWithMoney, self).latest(*args, **kwargs)
 
     def order_by(self, *args, **kwargs):
         kwargs = self._update_params(kwargs)
-        return self.get_query_set().order_by(*args, **kwargs)
+        return super(QuerysetWithMoney, self).order_by(*args, **kwargs)
 
     def select_related(self, *args, **kwargs):
         kwargs = self._update_params(kwargs)
-        return self.get_query_set().select_related(*args, **kwargs)
+        return super(QuerysetWithMoney, self).select_related(*args, **kwargs)
 
     def values(self, *args, **kwargs):
         kwargs = self._update_params(kwargs)
-        return self.get_query_set().values(*args, **kwargs)
+        return super(QuerysetWithMoney, self).values(*args, **kwargs)
+
+
+class MoneyManager(models.Manager):
+    def get_query_set(self):
+        return QuerysetWithMoney(self.model)

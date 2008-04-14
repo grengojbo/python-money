@@ -57,6 +57,10 @@ class MoneyField(models.DecimalField):
         
         setattr(cls, self.name, MoneyFieldProxy(self))
         
+        if not hasattr(cls, '_default_manager'):
+            from managers import MoneyManager
+            cls.add_to_class('objects', MoneyManager())
+        
     def get_db_prep_save(self, value):
         if isinstance(value, Money):
             value = value.amount  
