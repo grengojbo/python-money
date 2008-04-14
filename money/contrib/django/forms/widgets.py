@@ -12,7 +12,11 @@ class CurrencySelect(forms.Select):
     
 class InputMoneyWidget(forms.TextInput):
     
-    currency_widget = CurrencySelect()
+    def __init__(self, attrs=None, currency_widget=None):
+        self.currency_widget = currency_widget
+        if not self.currency_widget:
+            self.currency_widget = CurrencySelect()
+        super(InputMoneyWidget, self).__init__(attrs)
     
     def render(self, name, value, attrs=None):
         amount = ''
