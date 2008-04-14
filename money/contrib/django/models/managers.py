@@ -42,10 +42,6 @@ class QuerysetWithMoney(QuerySet):
     def get_or_create(self, **kwargs):
         kwargs = self._update_params(kwargs)
         return super(QuerysetWithMoney, self).get_or_create(**kwargs)
-        
-    #def create(self, **kwargs):
-    #    kwargs = self._update_params(kwargs)
-    #    return super(QuerysetWithMoney, self).create(**kwargs)
 
     def filter(self, *args, **kwargs):
         kwargs = self._update_params(kwargs)
