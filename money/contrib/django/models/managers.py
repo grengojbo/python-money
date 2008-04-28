@@ -9,12 +9,12 @@ __all__ = ('QuerysetWithMoney', 'MoneyManager',)
 class QuerysetWithMoney(QuerySet):
     
     def _update_params(self, kwargs):
-        from django.db.models.query import LOOKUP_SEPARATOR
+        from django.db.models.sql.constants import LOOKUP_SEP
         from money import Money
         to_append = {}
         for name, value in kwargs.items():
             if isinstance(value, Money):
-                path = name.split(LOOKUP_SEPARATOR)
+                path = name.split(LOOKUP_SEP)
                 if len(path) > 1:
                     field_name = currency_field_name(path[0])
                 else:
