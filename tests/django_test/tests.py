@@ -159,4 +159,10 @@ class MoneyFieldTestCase(TestCase):
         self.assertEqual(qset.count(), 2)
         self.assertSameCurrency([ent.price for ent in qset], "UAH")
         
-        
+    def testProxy(self):
+        e = Entity()
+        e.price = Money(0, "BGN")
+        e.price.amount = 3
+        self.assertEqual(e.price, Money(3, "BGN"))
+        e.price.from_string("BGN 5.0")
+        self.assertEqual(e.price, Money(5, "BGN"))
