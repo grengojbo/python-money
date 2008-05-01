@@ -166,3 +166,17 @@ class MoneyFieldTestCase(TestCase):
         self.assertEqual(e.price, Money(3, "BGN"))
         e.price.from_string("BGN 5.0")
         self.assertEqual(e.price, Money(5, "BGN"))
+        
+        e1 = Entity(price=Money(100, "USD"))
+        e2 = Entity(price=Money(200, "USD"))
+        self.assertEqual(e1.price, Money(100, "USD"))
+        self.assertEqual(e2.price, Money(200, "USD"))
+        
+        e2.price = Money(300, "USD")
+        self.assertEqual(e1.price, Money(100, "USD"))
+        self.assertEqual(e2.price, Money(300, "USD"))
+        
+        e2.price.from_string("USD 400")
+        self.assertEqual(e1.price, Money(100, "USD"))
+        self.assertEqual(e2.price, Money(400, "USD"))
+        

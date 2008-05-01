@@ -20,17 +20,18 @@ class MoneyFieldProxy(object):
     def __init__(self, field):
         self.field = field
         self.currency_field_name = currency_field_name(self.field.name)
-        self.cached_val = None
-        
+    
+    def _money_from_obj(self, obj):
+        return Money(obj.__dict__[self.field.name], obj.__dict__[self.currency_field_name])
+    
     def __get__(self, obj, type=None):
         if obj is None:
             raise AttributeError('Can only be accessed via an instance.')
-        if not self.cached_val:
-            self.cached_val = Money(obj.__dict__[self.field.name], obj.__dict__[self.currency_field_name])
-        return self.cached_val
+        if not isinstance(obj.__dict__[self.field.name], Money):
+            obj.__dict__[self.field.name] = self._money_from_obj(obj)
+        return obj.__dict__[self.field.name]
     
     def __set__(self, obj, value):
-        self.cached_val = None
         if isinstance(value, Money):
             obj.__dict__[self.field.name] = value.amount  
             setattr(obj, self.currency_field_name, smart_unicode(value.currency))
