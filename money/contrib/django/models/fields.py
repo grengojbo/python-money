@@ -36,6 +36,7 @@ class MoneyFieldProxy(object):
             obj.__dict__[self.field.name] = value.amount  
             setattr(obj, self.currency_field_name, smart_unicode(value.currency))
         else:
+            if value: value = str(value)
             obj.__dict__[self.field.name] = self.field.to_python(value) 
 
 
